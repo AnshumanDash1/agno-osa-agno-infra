@@ -75,9 +75,77 @@ def execute_javascript(js_code: str, timeout: Optional[int] = None) -> str:
     return run_applescript(script, timeout=timeout)
 
 
+
+GMAIL_BASE_URL = "https://mail.google.com/"
+
+
+def _focus_or_open_gmail(target_url: str = GMAIL_BASE_URL) -> None:
+    """Focus an existing Gmail tab or open a new one if none are found."""
+    escaped_target = _escape_for_applescript(target_url)
+    script = f"""
+    tell application "Google Chrome"
+        if (count of windows) = 0 then
+            make new window
+        end if
+        set frontWindow to front window
+
+        set activeMatches to false
+        try
+            set activeUrl to URL of active tab of frontWindow
+            if activeUrl contains "mail.google.com" then
+                set activeMatches to true
+            end if
+        on error
+            set activeMatches to false
+        end try
+
+        if activeMatches then
+            activate
+            return
+        end if
+
+        set foundWindow to missing value
+        set foundTabIndex to 0
+
+        set windowCount to count of windows
+        repeat with windowIndex from 1 to windowCount
+            set currentWindow to window windowIndex
+            set tabCount to count of tabs of currentWindow
+            repeat with tabIndex from 1 to tabCount
+                set currentTab to tab tabIndex of currentWindow
+                try
+                    set tabUrl to URL of currentTab
+                on error
+                    set tabUrl to ""
+                end try
+                if tabUrl contains "mail.google.com" then
+                    set foundWindow to currentWindow
+                    set foundTabIndex to tabIndex
+                    exit repeat
+                end if
+            end repeat
+            if foundWindow is not missing value then exit repeat
+        end repeat
+
+        if foundWindow is missing value then
+            tell frontWindow
+                make new tab with properties {{URL:"{escaped_target}"}}
+                set active tab index to (count of tabs)
+            end tell
+            activate
+        else
+            set index of foundWindow to 1
+            set active tab index of foundWindow to foundTabIndex
+            activate
+        end if
+    end tell
+    """
+    run_applescript(script)
+
 # Gmail tooling utilities
 
 def _ensure_gmail_loaded(timeout_seconds: int = 10) -> None:
+    _focus_or_open_gmail()
     js = """
     (() => {
         const url = window.location.href;
@@ -267,6 +335,9 @@ def open_chrome_url(url: str) -> None:
     """Open the provided URL in Google Chrome."""
     if not url:
         raise ValueError("url is required")
+    if "mail.google.com" in url:
+        _focus_or_open_gmail(target_url=url)
+        return
     script = f'''
     tell application "Google Chrome"
         if not (exists window 1) then

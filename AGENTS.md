@@ -15,6 +15,8 @@ Current tests are manual harnesses under `tool_testing/`. Mirror that pattern fo
 Use the Playwright MCP harness to exercise AgentOS application flows end-to-end and catch regressions before shipping changes.
 Whenever you are testing, go to https://os.agno.com/chat?type=agent&id=assistant&session=66beddc6-589c-441a-9bf3-35ce5bf1612b to chat with the deployed bot and make sure all is well.
 
+Remember that you have access to the user's browser through Playwright MCP, so you are able to test anything that may require access outside of the local terminal. 
+
 ## Commit & Pull Request Guidelines
 Write imperative, 60-character-or-shorter commit subjects (example: `Add Gmail unread scraping utility`). Group related changes per commit and add concise bodies when behavior changes. PRs should summarize the intent, list test commands executed, and link any tracking issues. Include screenshots or logs when demonstrating UI automation results and call out security-sensitive configuration changes, especially API keys or OAuth scopes.
 
