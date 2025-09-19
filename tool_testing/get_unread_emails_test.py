@@ -1,62 +1,46 @@
 import json
+import sys
 import time
-import subprocess
+from pathlib import Path
 
-def run_applescript(script: str) -> str:
-    p = subprocess.run(
-        ["osascript", "-e", script],
-        capture_output=True,
-        text=True,
-        encoding="utf-8"
-    )
-    return p.stdout.strip()
+ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
-def execute_javascript(js_code: str) -> str:
-    # Escape for AppleScript
-    safe_js = js_code.replace("\\", "\\\\").replace('"', '\\"')
-    script = f'''
-    tell application "Google Chrome"
-        if not (exists window 1) then return ""
-        execute front window's active tab javascript "{safe_js}"
-    end tell
-    '''
-    return run_applescript(script)
-
-def get_unread_emails(limit: int = 5) -> list[dict]:
-    js_code = f"""
-    (() => {{
-        const rows = document.querySelectorAll('tr.zE');
-        const emails = [];
-        for (let i = 0; i < rows.length && emails.length < {limit}; i++) {{
-            const row = rows[i];
-            const subjectEl = row.querySelector('span.bog');
-            const senderEl = row.querySelector('span.zF, span.yX');
-            const snippetEl = row.querySelector('span.y2');
-            const a = row.querySelector('td a[href]');
-            emails.push({{
-                subject: subjectEl ? subjectEl.innerText.trim() : "",
-                sender: senderEl ? senderEl.innerText.trim() : "",
-                snippet: snippetEl ? snippetEl.innerText.replace(/^\\s*-\\s*/, "").trim() : "",
-                href: a ? a.href : ""
-            }});
-        }}
-        return JSON.stringify(emails);
-    }})()
-    """
-    raw = execute_javascript(js_code).strip()
-    if not raw:
-        return []
-    try:
-        return json.loads(raw)
-    except json.JSONDecodeError:
-        # try to clean if AppleScript wrapped in extra quotes
-        if raw.startswith('"') and raw.endswith('"'):
-            cleaned = raw[1:-1].encode('utf-8').decode('unicode_escape')
-            return json.loads(cleaned)
-        raise
+from computer_use_tool import list_recent_emails, open_chrome_url, read_email_body
 
 if __name__ == "__main__":
-    print("Make sure Gmail is open in Chrome and you are logged in.")
-    time.sleep(2)
-    emails = get_unread_emails(limit=5)
+    try:
+        print("Opening Gmail in Chrome...")
+        open_chrome_url("https://mail.google.com/")
+    except RuntimeError as exc:
+        print(f"Failed to open Gmail: {exc}")
+        sys.exit(1)
+
+    print("Waiting for Gmail to settle...")
+    time.sleep(3)
+
+    try:
+        emails = list_recent_emails(limit=5)
+    except RuntimeError as exc:
+        print("Could not retrieve message list:")
+        print(f"  {exc}")
+        if "Chrome is blocking" in str(exc):
+            print("\nEnable Chrome > View > Developer > Allow JavaScript from Apple Events and re-run.")
+        sys.exit(1)
+
+    print("Recent messages:")
     print(json.dumps(emails, indent=2, ensure_ascii=False))
+
+    if emails:
+        chosen = emails[0]["thread_id"]
+        print(f"\nFetching body for first thread: {chosen}")
+        try:
+            details = read_email_body(thread_id=chosen)
+        except RuntimeError as exc:
+            print("Could not open the selected thread:")
+            print(f"  {exc}")
+            sys.exit(1)
+        print(json.dumps(details, indent=2, ensure_ascii=False))
+    else:
+        print("No messages returned. Ensure Gmail inbox is visible in Chrome.")
