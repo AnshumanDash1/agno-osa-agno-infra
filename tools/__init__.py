@@ -1,0 +1,50 @@
+"""Toolkit registry for the AI screen reader agent."""
+
+from .email_communication import (
+    GMAIL_MANAGEMENT_TOOLKIT,
+    GMAIL_READING_TOOLKIT,
+    MESSAGING_TOOLKIT,
+)
+from .calendar_scheduling import CALENDAR_TOOLKIT
+from .browser_control import (
+    BROWSER_ADVANCED_TOOLKIT,
+    BROWSER_INTERACTION_TOOLKIT,
+    BROWSER_NAVIGATION_TOOLKIT,
+)
+from .productivity_files import GOOGLE_WORKSPACE_TOOLKIT, FILE_SYSTEM_TOOLKIT
+from .system_control import (
+    APP_CONTROL_TOOLKIT,
+    INPUT_EMULATION_TOOLKIT,
+    SYSTEM_QUERY_TOOLKIT,
+)
+from .assistive_intelligence import ASSISTIVE_INTELLIGENCE_TOOLKIT
+from .third_party_integrations import (
+    MAPS_TOOLKIT,
+    RIDESHARE_TOOLKIT,
+    FOOD_DELIVERY_TOOLKIT,
+    BANKING_TOOLKIT,
+)
+from .accessibility_enhancements import ACCESSIBILITY_TOOLKIT
+from .agentic_infrastructure import AGENTIC_INFRA_TOOLKIT
+
+__all__ = [
+    "GMAIL_READING_TOOLKIT",
+    "GMAIL_MANAGEMENT_TOOLKIT",
+    "MESSAGING_TOOLKIT",
+    "CALENDAR_TOOLKIT",
+    "BROWSER_NAVIGATION_TOOLKIT",
+    "BROWSER_INTERACTION_TOOLKIT",
+    "BROWSER_ADVANCED_TOOLKIT",
+    "GOOGLE_WORKSPACE_TOOLKIT",
+    "FILE_SYSTEM_TOOLKIT",
+    "APP_CONTROL_TOOLKIT",
+    "INPUT_EMULATION_TOOLKIT",
+    "SYSTEM_QUERY_TOOLKIT",
+    "ASSISTIVE_INTELLIGENCE_TOOLKIT",
+    "MAPS_TOOLKIT",
+    "RIDESHARE_TOOLKIT",
+    "FOOD_DELIVERY_TOOLKIT",
+    "BANKING_TOOLKIT",
+    "ACCESSIBILITY_TOOLKIT",
+    "AGENTIC_INFRA_TOOLKIT",
+]

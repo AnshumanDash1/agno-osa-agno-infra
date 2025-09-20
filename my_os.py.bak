@@ -9,12 +9,10 @@ from computer_use_tool import (
     open_chrome_url_tool as open_chrome_url,
     read_email_body_tool as read_email_body,
 )
-from screen_reader_agents import SCREEN_READER_AGENTS, SCREEN_READER_TEAM
 
 # model=Ollama(id="llama3.2:1b"),
 # model=Gemini(id="gemini-2.0-flash-lite"),
 load_dotenv()
-screen_reader_agents = list(SCREEN_READER_AGENTS.values())
 
 assistant = Agent(
     name="Assistant",
@@ -48,8 +46,7 @@ test_assistant = Agent(
 agent_os = AgentOS(
     os_id="my-first-os",
     description="My first AgentOS",
-    agents=[assistant, *screen_reader_agents],
-    teams=[SCREEN_READER_TEAM],
+    agents=[assistant],
 )
 
 app = agent_os.get_app()
