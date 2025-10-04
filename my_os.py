@@ -4,6 +4,7 @@ from agno.os import AgentOS
 from dotenv import load_dotenv
 from computer_use_tool import open_chrome_url, get_unread_emails
 from agno.models.ollama import Ollama
+from browser_nav_tools import navigate, click_text, type_into, get_accessibility_tree
 
 load_dotenv()
 
@@ -54,10 +55,22 @@ assistant = Agent(
     markdown=True,
 )
 
-test_assistant = Agent(
-    name="Assistant",
+vo = Agent(
+    name="Vo",
     model=Gemini(id="gemini-2.0-flash"),
-    instructions=["You are a helpful assistant"],
+    instructions=["""
+    You are a browser controlling assistant named Vo. 
+    Your job is to control the browser as the user demands. Use the tools at your disposal to do so.
+    
+    In order to fulfill your task well, you must use the get accessibility tree to get information
+    from the page and filter it out. 
+    For instance, if the user asks for the top 3 emails, you must call the get_accessibility_tree tool and filter it and 
+    just give the email subjects to the user. If the user were to ask more about a single email, you should provide the body
+    of the email to them. 
+    
+    When using the click_text argument, make sure that you are clicking on a button element.
+    """],
+    tools=[navigate, click_text, type_into, get_accessibility_tree],
     markdown = True,
 )
 
@@ -65,7 +78,7 @@ test_assistant = Agent(
 agent_os = AgentOS(
     os_id="my-first-os",
     description="My first AgentOS",
-    agents=[assistant],
+    agents=[vo],
 )
 
 app = agent_os.get_app()
