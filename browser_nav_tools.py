@@ -43,12 +43,12 @@ async def get_accessibility_tree():
 # ----------------------------
 # Test sequence
 # ----------------------------
-# async def main():
-#     print(await navigate("https://example.com"))
-#     print(await click_text("More information"))
-#     print(await navigate("https://google.com"))
-#     print(await type_into("textarea[name=q]", "hello world"))
-#     ax_tree = await get_accessibility_tree()
-#     print("Accessibility snapshot keys:", ax_tree.keys())
-#
-# asyncio.run(main())
+async def main():
+    print(await navigate("https://example.com"))
+    print(await click_text("More information"))
+    print(await navigate("https://google.com"))
+    print(await type_into("textarea[name=q]", "hello world"))
+    ax_tree = await get_accessibility_tree()
+    print("Accessibility snapshot keys:", ax_tree.keys())
+
+asyncio.run(main())
