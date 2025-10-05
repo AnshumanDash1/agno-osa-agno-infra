@@ -2,7 +2,6 @@ from agno.agent import Agent
 from agno.models.google import Gemini
 from agno.os import AgentOS
 from dotenv import load_dotenv
-from computer_use_tool import open_chrome_url, get_unread_emails
 from agno.models.ollama import Ollama
 from browser_nav_tools import navigate, click_text, type_into, get_accessibility_tree
 
@@ -51,7 +50,6 @@ assistant = Agent(
     
     
     """],
-    tools=[open_chrome_url, get_unread_emails],
     markdown=True,
 )
 
