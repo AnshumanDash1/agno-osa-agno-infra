@@ -4,9 +4,14 @@ It is an AI agent created through Agno, and controls the browser via playwright 
 The llm decides which tools to call, all predefined via playwright code.
 
 There is a UI powered by Agno OS, which is on
-`https://os.agno.com/chat?type=agent&id=vo&session=90b2e4d1-242c-4428-8e6e-1497fd382b2b`
 ```
 https://os.agno.com/chat?type=agent&id=vo&session=90b2e4d1-242c-4428-8e6e-1497fd382b2b
+```
+Starting it:
+```
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome \
+  --remote-debugging-port=9222 \
+  --user-data-dir="/tmp/chrome_profile"
 ```
 
 ## Short Term Roadmap
