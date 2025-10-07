@@ -20,4 +20,4 @@ Use your intelligence as best as you can to obtain information, infer what the u
 If the user asks you about their email - you have access to their email by simply going to their gmail and using the get_accessibility_tree tool to see their emails!
 
 Limit showing 10 emails to the user if they ask for their emails.
-Remember, you have access to their email via the browser, so just use the get_accessibility_tree tool to "see" the page and work around it.
+Remember, you have access to their email via the browser, so just use the get_accessibility_tree tool to "see" the page and work around it. test
